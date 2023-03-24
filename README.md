@@ -34,6 +34,28 @@ export default {
 };
 ```
 
+Use inside SFC
+
+Add to vite config:
+
+```html
+<template>
+  <MyCoolComponent> Hello World! </MyCoolComponent>
+</template>
+
+<component name="MyCoolComponent">
+  <template>
+    <h1>
+      <slot />
+    </h1>
+  </template>
+</component>
+```
+
+## Limitations
+
+> ⚠️ IDE support (syntax highlighting, type checking) is still missing
+
 ## License
 
 Made with 💛
