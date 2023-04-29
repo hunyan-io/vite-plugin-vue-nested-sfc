@@ -36,8 +36,6 @@ export default {
 
 Use inside SFC
 
-Add to vite config:
-
 ```html
 <template>
   <MyCoolComponent> Hello World! </MyCoolComponent>
