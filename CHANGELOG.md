@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.2...v0.0.3)
+
+
+### 🏡 Chore
+
+  - Fix repository link for changelog ([2471826](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/2471826))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.0.2
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.1...v0.0.2)
