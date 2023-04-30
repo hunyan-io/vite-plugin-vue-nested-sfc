@@ -1,8 +1,8 @@
 {
   "name": "vite-plugin-vue-nested-sfc",
   "version": "0.0.2",
-  "description": "",
-  "repository": "github:HunYan-io/vite-plugin-vue-nested-sfc",
+  "description": "Nest SFCs within your SFC.",
+  "repository": "https://github.com/HunYan-io/vite-plugin-vue-nested-sfc",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
