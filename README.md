@@ -34,6 +34,17 @@ export default {
 };
 ```
 
+Add volar plugin for IDE support
+
+```json
+// tsconfig.app.json
+{
+  "vueCompilerOptions": {
+    "plugins": ["vite-plugin-vue-nested-sfc/tooling"]
+  }
+}
+```
+
 Use inside SFC
 
 ```html
@@ -41,7 +52,7 @@ Use inside SFC
   <MyCoolComponent> Hello World! </MyCoolComponent>
 </template>
 
-<component name="MyCoolComponent">
+<component name="MyCoolComponent" lang="html">
   <template>
     <h1>
       <slot />
@@ -49,10 +60,6 @@ Use inside SFC
   </template>
 </component>
 ```
-
-## Limitations
-
-> ⚠️ IDE support (syntax highlighting, type checking) is still missing
 
 ## License
 
