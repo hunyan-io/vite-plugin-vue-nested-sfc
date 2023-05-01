@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.3...v0.0.4)
+
+
+### 🏡 Chore
+
+  - Bump volar version ([76db8c1](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/76db8c1))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.0.3
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.2...v0.0.3)
