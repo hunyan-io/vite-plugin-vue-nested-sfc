@@ -111,8 +111,7 @@ const plugin: VueLanguagePlugin = (ctx) => {
         /^\.(js|ts|jsx|tsx)$/.test(embeddedFile.fileName.replace(fileName, ""))
       ) {
         const componentBlocks = sfc.customBlocks.filter(
-          (b) =>
-            b.type === "component" && typeof (b as any).attrs.name === "string"
+          (b) => b.type === "component" && typeof b.attrs.name === "string"
         );
         if (componentBlocks.length === 0) {
           return;
@@ -123,7 +122,7 @@ const plugin: VueLanguagePlugin = (ctx) => {
           ...componentBlocks.map(
             (b) =>
               `\nimport ${pascalCase(
-                (b as any).attrs.name
+                b.attrs.name as string
               )} from ${JSON.stringify(
                 `${fileName}__VLS_NSFC_${b.name.slice(
                   "customBlock_".length
@@ -140,7 +139,7 @@ const plugin: VueLanguagePlugin = (ctx) => {
             "setup() {",
             "return {",
             ...componentBlocks.map(
-              (b) => `${pascalCase((b as any).attrs.name)},\n`
+              (b) => `${pascalCase(b.attrs.name as string)},\n`
             )
           );
         } else {
@@ -149,7 +148,7 @@ const plugin: VueLanguagePlugin = (ctx) => {
             /const __VLS_componentsOption = {/,
             "const __VLS_componentsOption = {\n",
             ...componentBlocks.map(
-              (b) => `${pascalCase((b as any).attrs.name)},\n`
+              (b) => `${pascalCase(b.attrs.name as string)},\n`
             )
           );
         }
