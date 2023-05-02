@@ -5,7 +5,7 @@ import { genComponentBlockCode } from "./gen";
 import { pascalCase } from "./utils";
 
 export default function vueNestedSFC(): PluginOption {
-  const prefix = "virtual:vue-nested-sfc/";
+  const prefix = "virtual:vue-nested-sfc";
 
   let config: ResolvedConfig;
   let cache: ReturnType<typeof createCache>;
