@@ -37,14 +37,18 @@ export default function vueNestedSFC(): PluginOption {
 
       const descriptor = cache.getDescriptor(filename);
 
-      return (
-        descriptor.customBlocks.find(
-          (block) =>
-            block.type === "component" &&
-            typeof block.attrs.name === "string" &&
-            pascalCase(block.attrs.name) === component
-        )?.content || ""
+      const componentBlock = descriptor.customBlocks.find(
+        (block) =>
+          block.type === "component" &&
+          typeof block.attrs.name === "string" &&
+          pascalCase(block.attrs.name) === component
       );
+
+      if (!componentBlock) {
+        return "";
+      }
+
+      return { code: componentBlock.content, map: componentBlock.map as any };
     },
 
     transform(code, id) {

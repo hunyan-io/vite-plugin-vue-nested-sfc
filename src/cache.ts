@@ -13,7 +13,12 @@ export default function createCache(config: ResolvedConfig) {
       if (!descriptorCache.has(filename)) {
         const { descriptor, errors } = compiler.parse(
           fs.readFileSync(filename, "utf8").toString(),
-          { filename }
+          {
+            filename,
+            sourceMap:
+              config.command === "build" ? !!config.build.sourcemap : true,
+            sourceRoot: config.root,
+          }
         );
         if (errors.length > 0) {
           throw errors[0];
