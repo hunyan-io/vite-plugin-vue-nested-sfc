@@ -52,7 +52,7 @@ Use inside SFC
   <MyCoolComponent> Hello World! </MyCoolComponent>
 </template>
 
-<component name="MyCoolComponent" lang="html">
+<component name="MyCoolComponent" lang="vue">
   <template>
     <h1>
       <slot />
