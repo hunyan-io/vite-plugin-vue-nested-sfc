@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.5...v0.0.6)
+
+
+### 📖 Documentation
+
+  - Use `lang="vue"` ([9869377](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/9869377))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.0.5
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.4...v0.0.5)
