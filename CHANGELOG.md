@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.6...v0.0.7)
+
+
+### 🚀 Enhancements
+
+  - Export nested components ([127cc5c](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/127cc5c))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.0.6
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.5...v0.0.6)
