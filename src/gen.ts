@@ -12,3 +12,23 @@ export function genComponentBlockCode(
     "}"
   );
 }
+
+export function genExportsCode(
+  virtualFilename: string,
+  components: string[],
+  mainCode: string
+) {
+  const codes = [mainCode, "\n"];
+  for (const component of components) {
+    codes.push(
+      "export { default as ",
+      component,
+      " } from '",
+      virtualFilename,
+      "/",
+      component,
+      ".vue';\n"
+    );
+  }
+  return codes.join("");
+}

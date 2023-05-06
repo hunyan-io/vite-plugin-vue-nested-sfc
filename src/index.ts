@@ -1,8 +1,7 @@
-import { parseVueRequest } from "@vitejs/plugin-vue";
 import type { PluginOption, ResolvedConfig } from "vite";
 import createCache from "./cache";
-import { genComponentBlockCode } from "./gen";
-import { pascalCase } from "./utils";
+import { genComponentBlockCode, genExportsCode } from "./gen";
+import { parseVueRequest, pascalCase } from "./utils";
 
 export default function vueNestedSFC(): PluginOption {
   const prefix = "virtual:vue-nested-sfc";
@@ -58,16 +57,18 @@ export default function vueNestedSFC(): PluginOption {
         return;
       }
 
-      if (
-        (request.query.type as any) !== "component" ||
-        !(request.query as any).name
-      ) {
-        return;
+      if (!request.query.vue && request.filename.endsWith(".vue")) {
+        return genExportsCode(
+          prefix + request.filename,
+          cache.getNestedComponents(id),
+          code
+        );
+      } else if (request.query.type === "component" && request.query.name) {
+        return genComponentBlockCode(
+          prefix + request.filename,
+          pascalCase(request.query.name)
+        );
       }
-
-      const name = pascalCase((request.query as any).name);
-
-      return genComponentBlockCode(prefix + request.filename, name);
     },
 
     async handleHotUpdate({ modules, read, file, server }) {

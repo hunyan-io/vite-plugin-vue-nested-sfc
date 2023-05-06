@@ -152,6 +152,13 @@ const plugin: VueLanguagePlugin = (ctx) => {
             )
           );
         }
+
+        // export components
+        embeddedFile.content.push(
+          `\nexport { ${componentBlocks
+            .map((b) => pascalCase(b.attrs.name as string))
+            .join(", ")} };\n`
+        );
       }
     },
   };
