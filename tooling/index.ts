@@ -41,7 +41,10 @@ const plugin: VueLanguagePlugin = (ctx) => {
         } else {
           vueFile.update(snapshot);
         }
-        files.push(...vueFile.embeddedFiles.map((file) => file.fileName));
+        // add .nsfc to prevent other plugins from resolving these files
+        files.push(
+          ...vueFile.embeddedFiles.map((file) => `${file.fileName}.nsfc`)
+        );
       }
       return files;
     },
@@ -58,8 +61,13 @@ const plugin: VueLanguagePlugin = (ctx) => {
           return;
         }
 
+        const embeddedFileOriginalName = embeddedFile.fileName.replace(
+          /\.nsfc$/,
+          ""
+        );
+
         const targetFile = vueFile._allEmbeddedFiles.value.find(
-          (file) => file.file.fileName === embeddedFile.fileName
+          (file) => file.file.fileName === embeddedFileOriginalName
         );
         const componentBlock = sfc.customBlocks.find(
           (b) =>
