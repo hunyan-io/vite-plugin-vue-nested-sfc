@@ -1,12 +1,13 @@
 import fs from "node:fs";
 import type { SFCDescriptor } from "vue/compiler-sfc";
 import { type ResolvedConfig } from "vite";
-import { CompilerSfc, resolveCompiler } from "./compiler";
+import { resolveCompiler } from "./compiler";
 import { pascalCase } from "./utils";
 
 export default function createCache(config: ResolvedConfig) {
-  const descriptorCache: Map<string, SFCDescriptor> = new Map();
-  const compiler: CompilerSfc = resolveCompiler(config.root);
+  const descriptorCache = new Map<string, SFCDescriptor>();
+  const nestedComponentNames = new Set<string>();
+  const compiler = resolveCompiler(config.root);
 
   return {
     getDescriptor(filename: string) {
@@ -44,6 +45,18 @@ export default function createCache(config: ResolvedConfig) {
     },
     hasFile(filename: string) {
       return descriptorCache.has(filename);
+    },
+    registerNestedComponent(filename: string, component: string) {
+      if (filename.startsWith(config.root)) {
+        filename = filename.slice(config.root.length);
+      }
+      nestedComponentNames.add(`${filename}/${component}.vue`);
+    },
+    isNestedComponent(filename: string) {
+      if (filename.startsWith(config.root)) {
+        filename = filename.slice(config.root.length);
+      }
+      return nestedComponentNames.has(filename);
     },
   };
 }

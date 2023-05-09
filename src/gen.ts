@@ -1,9 +1,6 @@
-export function genComponentBlockCode(
-  virtualFilename: string,
-  component: string
-) {
+export function genComponentBlockCode(filename: string, component: string) {
   return (
-    `import ${component} from '${virtualFilename}/${component}.vue';\n` +
+    `import ${component} from '${filename}/${component}.vue';\n` +
     "export default function(Comp) {\n" +
     "  if (!Comp.components) {\n" +
     "    Comp.components = {};\n" +
@@ -14,7 +11,7 @@ export function genComponentBlockCode(
 }
 
 export function genExportsCode(
-  virtualFilename: string,
+  filename: string,
   components: string[],
   mainCode: string
 ) {
@@ -24,7 +21,7 @@ export function genExportsCode(
       "export { default as ",
       component,
       " } from '",
-      virtualFilename,
+      filename,
       "/",
       component,
       ".vue';\n"

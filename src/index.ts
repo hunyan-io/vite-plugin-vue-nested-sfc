@@ -1,16 +1,15 @@
+import path from "node:path";
 import type { PluginOption, ResolvedConfig } from "vite";
 import createCache from "./cache";
 import { genComponentBlockCode, genExportsCode } from "./gen";
 import { parseVueRequest, pascalCase } from "./utils";
 
 export default function vueNestedSFC(): PluginOption {
-  const prefix = "virtual:vue-nested-sfc";
-
   let config: ResolvedConfig;
   let cache: ReturnType<typeof createCache>;
 
   return {
-    name: "vue-nested-sfc",
+    name: "vite:vue-nested-sfc",
 
     configResolved(resolvedConfig) {
       config = resolvedConfig;
@@ -20,19 +19,34 @@ export default function vueNestedSFC(): PluginOption {
       cache = createCache(config);
     },
 
-    resolveId(id) {
-      if (id.startsWith(prefix)) {
+    resolveId(id, importerFile) {
+      if (cache.isNestedComponent(id)) {
         return id;
+      }
+      if (importerFile && cache.isNestedComponent(importerFile)) {
+        let [, importerDir] = importerFile.match(/^(.*)(?:\/[^/]+){2}\.vue$/)!;
+        if (!importerDir.startsWith(config.root)) {
+          importerDir = config.root + importerDir;
+        }
+        return path.resolve(importerDir, id);
       }
     },
 
     load(id) {
-      if (!id.startsWith(prefix)) {
+      if (!cache.isNestedComponent(id)) {
         return;
       }
 
-      const [, filename, component] =
-        id.slice(prefix.length).match(/^(.*)\/([^/]+)\.vue$/) || [];
+      const match = id.match(/^(.*)\/([^/]+)\.vue$/);
+      if (!match) {
+        return;
+      }
+      let filename = match[1];
+      const component = match[2];
+
+      if (!filename.startsWith(config.root)) {
+        filename = config.root + filename;
+      }
 
       const descriptor = cache.getDescriptor(filename);
 
@@ -53,21 +67,27 @@ export default function vueNestedSFC(): PluginOption {
     transform(code, id) {
       const request = parseVueRequest(id);
 
-      if (request.filename.startsWith(prefix)) {
+      if (cache.isNestedComponent(id)) {
         return;
       }
 
       if (!request.query.vue && request.filename.endsWith(".vue")) {
-        return genExportsCode(
-          prefix + request.filename,
-          cache.getNestedComponents(id),
-          code
-        );
+        const components = cache.getNestedComponents(id);
+        for (const componentName of components) {
+          cache.registerNestedComponent(request.filename, componentName);
+        }
+        return {
+          code: genExportsCode(request.filename, components, code),
+          // eslint-disable-next-line unicorn/no-null
+          map: null,
+        };
       } else if (request.query.type === "component" && request.query.name) {
-        return genComponentBlockCode(
-          prefix + request.filename,
-          pascalCase(request.query.name)
-        );
+        const componentName = pascalCase(request.query.name);
+        cache.registerNestedComponent(request.filename, componentName);
+        return {
+          code: genComponentBlockCode(request.filename, componentName),
+          map: { mappings: "" },
+        };
       }
     },
 
@@ -117,9 +137,11 @@ export default function vueNestedSFC(): PluginOption {
         if (!nextBlock || block.content === nextBlock.content) {
           continue;
         }
-        const componentModule = server.moduleGraph.getModuleById(
-          `${prefix}${file}/${name}.vue`
-        );
+        const componentModule =
+          server.moduleGraph.getModuleById(`${file}/${name}.vue`) ||
+          server.moduleGraph.getModuleById(
+            `${file.replace(config.root, "")}/${name}.vue`
+          );
         if (!componentModule) {
           continue;
         }
@@ -129,10 +151,15 @@ export default function vueNestedSFC(): PluginOption {
             m.url.includes("type=component") &&
             m.url.includes(`name=${nextBlock.attrs.name}`)
         );
-        if (!blockModule) {
-          continue;
+        if (blockModule) {
+          affectedModules.add(blockModule);
         }
-        affectedModules.add(blockModule);
+        const subModules = [...componentModule.importedModules].filter((m) =>
+          m.url.startsWith(componentModule.url)
+        );
+        for (const subModule of subModules) {
+          affectedModules.add(subModule);
+        }
       }
 
       return [...affectedModules];
