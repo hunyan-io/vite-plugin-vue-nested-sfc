@@ -2,11 +2,10 @@ import {
   parseVueRequest as _parseVueRequest,
   VueQuery,
 } from "@vitejs/plugin-vue";
+import { capitalize, camelize } from "@vue/shared";
 
 export function pascalCase(str: string) {
-  return str
-    .replace(/(?:\b|_)[a-z]/g, (c) => c.toUpperCase())
-    .replace(/[\W_]+/g, "");
+  return capitalize(camelize(str));
 }
 
 export function parseVueRequest(id: string) {

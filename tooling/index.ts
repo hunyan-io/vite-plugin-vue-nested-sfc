@@ -3,12 +3,12 @@ import {
   VueFile,
   getDefaultVueLanguagePlugins,
   replace,
+  getLength,
 } from "@volar/vue-language-core";
+import { capitalize, camelize } from "@vue/shared";
 
 function pascalCase(str: string) {
-  return str
-    .replace(/(?:\b|_)[a-z]/g, (c) => c.toUpperCase())
-    .replace(/[\W_]+/g, "");
+  return capitalize(camelize(str));
 }
 
 const plugin: VueLanguagePlugin = (ctx) => {
@@ -88,29 +88,33 @@ const plugin: VueLanguagePlugin = (ctx) => {
           if (typeof segment === "string") {
             newContent.push(segment);
           } else {
-            let base = 0;
+            let base: number | undefined = 0;
             // eslint-disable-next-line unicorn/prefer-switch
             if (segment[1] === "template") {
-              base = vueFile.sfc.template!.startTagEnd;
+              base = vueFile.sfc.template?.startTagEnd;
             } else if (segment[1] === "script") {
-              base = vueFile.sfc.script!.startTagEnd;
+              base = vueFile.sfc.script?.startTagEnd;
             } else if (segment[1] === "scriptSetup") {
-              base = vueFile.sfc.scriptSetup!.startTagEnd;
+              base = vueFile.sfc.scriptSetup?.startTagEnd;
             } else if (segment[1]?.startsWith("style_")) {
               const index = Number(segment[1].slice("style_".length));
-              base = vueFile.sfc.styles[index]!.startTagEnd;
+              base = vueFile.sfc.styles[index]?.startTagEnd;
             } else if (segment[1]?.startsWith("customBlock_")) {
               const index = Number(segment[1].slice("customBlock_".length));
-              base = vueFile.sfc.customBlocks[index]!.startTagEnd;
+              base = vueFile.sfc.customBlocks[index]?.startTagEnd;
             }
-            newContent.push([
-              segment[0],
-              componentBlock.name,
-              typeof segment[2] === "number"
-                ? segment[2] + base
-                : [segment[2][0] + base, segment[2][1] + base],
-              segment[3],
-            ]);
+            if (base !== undefined) {
+              newContent.push([
+                segment[0],
+                componentBlock.name,
+                typeof segment[2] === "number"
+                  ? segment[2] + base
+                  : [segment[2][0] + base, segment[2][1] + base],
+                segment[3],
+              ]);
+            } else {
+              newContent.push(segment[0]);
+            }
           }
         }
         embeddedFile.content = newContent;
@@ -135,31 +139,9 @@ const plugin: VueLanguagePlugin = (ctx) => {
                 `${fileName}__VLS_NSFC_${b.name.slice(
                   "customBlock_".length
                 )}.vue`
-              )};\n`
+              )};`
           )
         );
-
-        // register components
-        if (sfc.scriptSetup) {
-          replace(
-            embeddedFile.content,
-            /setup\(\) {\nreturn {\n/,
-            "setup() {",
-            "return {",
-            ...componentBlocks.map(
-              (b) => `${pascalCase(b.attrs.name as string)},\n`
-            )
-          );
-        } else {
-          replace(
-            embeddedFile.content,
-            /const __VLS_componentsOption = {/,
-            "const __VLS_componentsOption = {\n",
-            ...componentBlocks.map(
-              (b) => `${pascalCase(b.attrs.name as string)},\n`
-            )
-          );
-        }
 
         // export components
         embeddedFile.content.push(
@@ -167,6 +149,46 @@ const plugin: VueLanguagePlugin = (ctx) => {
             .map((b) => pascalCase(b.attrs.name as string))
             .join(", ")} };\n`
         );
+
+        const codeLength = getLength(embeddedFile.content);
+
+        // register components
+        if (sfc.scriptSetup) {
+          replace(
+            embeddedFile.content,
+            new RegExp(
+              `const __VLS_internalComponent = \\(await import\\('${ctx.vueCompilerOptions.lib}'\\)\\)\\.defineComponent\\({\nsetup\\(\\) {\nreturn {\n`
+            ),
+            `const __VLS_internalComponent = (await import('${ctx.vueCompilerOptions.lib}')).defineComponent({\nsetup() {\nreturn {\n`,
+            ...componentBlocks.map(
+              (b) => `${pascalCase(b.attrs.name as string)},\n`
+            )
+          );
+        } else {
+          replace(
+            embeddedFile.content,
+            "const __VLS_componentsOption = {",
+            "const __VLS_componentsOption = {\n",
+            ...componentBlocks.map(
+              (b) => `${pascalCase(b.attrs.name as string)},\n`
+            )
+          );
+        }
+
+        // mappings have to be shifted because of the added code when replacing
+        const lengthShift = getLength(embeddedFile.content) - codeLength;
+        embeddedFile.mirrorBehaviorMappings =
+          embeddedFile.mirrorBehaviorMappings.map((mapping) => ({
+            ...mapping,
+            sourceRange: [
+              mapping.sourceRange[0] + lengthShift,
+              mapping.sourceRange[1] + lengthShift,
+            ],
+            generatedRange: [
+              mapping.generatedRange[0] + lengthShift,
+              mapping.generatedRange[1] + lengthShift,
+            ],
+          }));
       }
     },
   };
