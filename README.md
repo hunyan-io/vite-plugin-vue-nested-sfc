@@ -7,7 +7,7 @@
 
 Nest SFCs within your SFC.
 
-## Usage
+## Install
 
 Install package:
 
@@ -34,9 +34,9 @@ export default {
 };
 ```
 
-Add volar plugin for IDE support
+Add volar plugin for IDE support:
 
-```json
+```jsonc
 // tsconfig.app.json
 {
   "vueCompilerOptions": {
@@ -45,20 +45,66 @@ Add volar plugin for IDE support
 }
 ```
 
-Use inside SFC
+## Usage
+
+### Defining components
+
+Nested components are defined with the `<component>` block. The block's content is treated as if it's a seperate SFC.
 
 ```html
 <template>
-  <MyCoolComponent> Hello World! </MyCoolComponent>
+  <MyHeader>
+    Hello World!
+  </MyHeader>
 </template>
 
-<component name="MyCoolComponent" lang="vue">
+<component name="MyHeader" lang="vue">
   <template>
     <h1>
       <slot />
     </h1>
   </template>
 </component>
+```
+
+### Exporting
+
+You can export nested components with the `export` attribute.
+
+```html
+<!-- Button.vue -->
+<template>
+  <button>
+    <slot />
+  </button>
+</template>
+
+<component name="RoundedButton" lang="vue" export>
+  <template>
+    <button>
+      <slot />
+    </button>
+  </template>
+  <style scoped>
+    button {
+      border-radius: 20px;
+    }
+  </style>
+</component>
+```
+
+Import them from other files as named exports.
+
+```html
+<!-- App.vue -->
+<script setup>
+  import { RoundedButton } from "./components/Button.vue";
+</script>
+<template>
+  <RoundedButton>
+    Click me
+  </RoundedButton>
+</template>
 ```
 
 ## License
