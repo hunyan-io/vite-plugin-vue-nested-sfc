@@ -86,10 +86,12 @@ export default function vueNestedSFC(): PluginOption {
         }
         return {
           code: genExportsCode(request.filename, exportedComponents, code),
-          // eslint-disable-next-line unicorn/no-null
           map: null,
         };
-      } else if (request.query.type === "component" && request.query.name) {
+      } else if (request.query.type === "component") {
+        if (typeof request.query.name !== "string") {
+          throw new TypeError("Component blocks require a name attribute.");
+        }
         const componentName = pascalCase(request.query.name);
         cache.registerNestedComponent(request.filename, componentName);
         return {
@@ -112,11 +114,12 @@ export default function vueNestedSFC(): PluginOption {
       cache.updateFileCache(file, await read());
       const nextDescriptor = cache.getDescriptor(file);
 
+      const mainModule = server.moduleGraph.getModuleById(file);
+
       if (
         prevDescriptor.customBlocks.length !==
         nextDescriptor.customBlocks.length
       ) {
-        const mainModule = server.moduleGraph.getModuleById(file);
         if (mainModule) {
           affectedModules.add(mainModule);
         }
@@ -127,6 +130,9 @@ export default function vueNestedSFC(): PluginOption {
           continue;
         }
         if (typeof block.attrs.name !== "string") {
+          if (mainModule) {
+            affectedModules.add(mainModule);
+          }
           continue;
         }
         const name = pascalCase(block.attrs.name);
@@ -136,8 +142,11 @@ export default function vueNestedSFC(): PluginOption {
             typeof nextBlock.attrs.name === "string" &&
             pascalCase(nextBlock.attrs.name) === name
         );
-        if (!nextBlock || nextBlock.attrs.name !== block.attrs.name) {
-          const mainModule = server.moduleGraph.getModuleById(file);
+        if (
+          !nextBlock ||
+          nextBlock.attrs.name !== block.attrs.name ||
+          nextBlock.attrs.export !== block.attrs.export
+        ) {
           if (mainModule) {
             affectedModules.add(mainModule);
           }

@@ -1,6 +1,8 @@
 {
   "extends": ["eslint-config-unjs"],
   "rules": {
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "unicorn/no-null": "off",
+    "unicorn/no-lonely-if": "off"
   }
 }
