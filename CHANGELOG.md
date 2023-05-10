@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.1.0
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.7...v0.1.0)
+
+
+### 🚀 Enhancements
+
+  - ⚠️  Make exporting components explicit ([10cbd6c](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/10cbd6c))
+  - Throw when component block has no name ([c3a1caf](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/c3a1caf))
+
+### 🩹 Fixes
+
+  - **tooling:** Prevent resolving nsfc child blocks ([52fa576](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/52fa576))
+  - **tooling:** Incorrect mappings after replace ([60f1409](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/60f1409))
+  - Transform appending empty lines ([0f68dee](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/0f68dee))
+
+### 💅 Refactors
+
+  - Drop virtual prefix ([88231cd](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/88231cd))
+
+#### ⚠️  Breaking Changes
+
+  - ⚠️  Make exporting components explicit ([10cbd6c](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/10cbd6c))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.0.7
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.6...v0.0.7)
