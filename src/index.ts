@@ -81,6 +81,9 @@ export default function vueNestedSFC(): PluginOption {
               !!block.attrs.export
           )
           .map((block) => pascalCase(block.attrs.name as string));
+        if (exportedComponents.length === 0) {
+          return;
+        }
         for (const componentName of exportedComponents) {
           cache.registerNestedComponent(request.filename, componentName);
         }
