@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.1.0...v0.1.1)
+
+
+### 📖 Documentation
+
+  - Add export example ([f66d6b3](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/f66d6b3))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.1.0
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.0.7...v0.1.0)
