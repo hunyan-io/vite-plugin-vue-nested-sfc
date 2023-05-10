@@ -146,6 +146,7 @@ const plugin: VueLanguagePlugin = (ctx) => {
         // export components
         embeddedFile.content.push(
           `\nexport { ${componentBlocks
+            .filter((b) => !!b.attrs.export)
             .map((b) => pascalCase(b.attrs.name as string))
             .join(", ")} };\n`
         );

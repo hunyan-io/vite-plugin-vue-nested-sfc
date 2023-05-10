@@ -72,12 +72,20 @@ export default function vueNestedSFC(): PluginOption {
       }
 
       if (!request.query.vue && request.filename.endsWith(".vue")) {
-        const components = cache.getNestedComponents(id);
-        for (const componentName of components) {
+        const exportedComponents = cache
+          .getDescriptor(request.filename)
+          .customBlocks.filter(
+            (block) =>
+              block.type === "component" &&
+              typeof block.attrs.name === "string" &&
+              !!block.attrs.export
+          )
+          .map((block) => pascalCase(block.attrs.name as string));
+        for (const componentName of exportedComponents) {
           cache.registerNestedComponent(request.filename, componentName);
         }
         return {
-          code: genExportsCode(request.filename, components, code),
+          code: genExportsCode(request.filename, exportedComponents, code),
           // eslint-disable-next-line unicorn/no-null
           map: null,
         };
