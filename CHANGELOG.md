@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.1.1...v0.1.2)
+
+
+### 🩹 Fixes
+
+  - Issue resolving imports when building ([508627a](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/508627a))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.1.1
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.1.0...v0.1.1)
