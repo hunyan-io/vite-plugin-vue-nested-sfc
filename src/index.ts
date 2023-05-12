@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { PluginOption, ResolvedConfig } from "vite";
+import { normalizePath, type PluginOption, type ResolvedConfig } from "vite";
 import createCache from "./cache";
 import { genComponentBlockCode, genExportsCode } from "./gen";
 import { parseVueRequest, pascalCase } from "./utils";
@@ -23,12 +23,17 @@ export default function vueNestedSFC(): PluginOption {
       if (cache.isNestedComponent(id)) {
         return id;
       }
-      if (importerFile && cache.isNestedComponent(importerFile)) {
-        let [, importerDir] = importerFile.match(/^(.*)(?:\/[^/]+){2}\.vue$/)!;
+
+      const request = importerFile && parseVueRequest(importerFile);
+
+      if (request && cache.isNestedComponent(request.filename)) {
+        let [, importerDir] = request.filename.match(
+          /^(.*)(?:\/[^/]+){2}\.vue$/
+        )!;
         if (!importerDir.startsWith(config.root)) {
           importerDir = config.root + importerDir;
         }
-        return path.resolve(importerDir, id);
+        return normalizePath(path.resolve(importerDir, id));
       }
     },
 
