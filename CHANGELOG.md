@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.3
+
+[compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.1.2...v0.1.3)
+
+
+### 🩹 Fixes
+
+  - Components outside of root directory ([603e337](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/commit/603e337))
+
+### ❤️  Contributors
+
+- Heni Yangui
+
 ## v0.1.2
 
 [compare changes](https://github.com/HunYan-io/vite-plugin-vue-nested-sfc/compare/v0.1.1...v0.1.2)
