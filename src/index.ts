@@ -31,7 +31,7 @@ export default function vueNestedSFC(): PluginOption {
           /^(.*)(?:\/[^/]+){2}\.vue$/
         )!;
         if (!importerDir.startsWith(config.root)) {
-          importerDir = config.root + importerDir;
+          importerDir = path.resolve(config.root, importerDir);
         }
         return normalizePath(path.resolve(importerDir, id));
       }
@@ -50,7 +50,7 @@ export default function vueNestedSFC(): PluginOption {
       const component = match[2];
 
       if (!filename.startsWith(config.root)) {
-        filename = config.root + filename;
+        filename = path.resolve(config.root, filename);
       }
 
       const descriptor = cache.getDescriptor(filename);
